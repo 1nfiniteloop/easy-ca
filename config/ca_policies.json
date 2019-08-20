@@ -1,0 +1,17 @@
+{
+    "strict": {
+        "C":  "match",
+        "ST": "match",
+        "O":  "match",
+        "OU": "optional",
+        "CN": "supplied"
+
+    },
+    "loose": {
+        "C":  "optional",
+        "ST": "optional",
+        "O":  "optional",
+        "OU": "optional",
+        "CN": "supplied"
+    }
+}

@@ -1,0 +1,15 @@
+// Ref: https://code.visualstudio.com/docs/remote/containers#_devcontainerjson-reference
+{
+	"name": "dlang",
+	"dockerFile": "Dockerfile",
+	"extensions": [
+		"webfreak.code-d"
+	],
+	"runArgs": [
+		"--name=easy-ca.vscode",
+		"--volume=vscode.cache:/home/build",
+		"--cap-add=SYS_PTRACE",
+		"--security-opt",
+		"seccomp=unconfined"
+	]
+}
