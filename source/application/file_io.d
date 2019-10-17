@@ -272,6 +272,6 @@ class CertificateDatabaseFile : CertificateDatabaseStorage
     void write(const string jsonFormattedData)
     {
         std.file.write(filename, jsonFormattedData);
-        filename.setAttributes(octal!700);
+        filename.setAttributes(octal!600);
     }
 }
