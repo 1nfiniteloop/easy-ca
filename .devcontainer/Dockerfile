@@ -2,58 +2,61 @@ FROM ubuntu:bionic
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-RUN sed --in-place=~ 's|archive.ubuntu.com|ftp.acc.umu.se|g' /etc/apt/sources.list \
-    && apt-get update \
-    && apt-get \
-        --no-install-recommends \
-        --assume-yes \
-        --quiet \
-        upgrade
+RUN sed --in-place=~ 's|archive.ubuntu.com|ftp.acc.umu.se|g' /etc/apt/sources.list
 
-# Base tools
-RUN apt-get install \
+# Base tools for Dlang
+ARG DMD_VERSION=2.086.1
+ARG DSTEP_VERSION=1.0.0
+
+RUN apt-get update \
+    && apt-get install \
         --no-install-recommends \
         --assume-yes \
         --quiet \
         ca-certificates \
         curl \
-        git \
-        less \
-        netcat \
-        xz-utils
-
-# dlang-tools
-RUN apt-get install \
-        --no-install-recommends \
-        --assume-yes \
-        --quiet \
         gcc \
         libc6-dev \
         pkg-config \
+        xz-utils \
+    && rm -r /var/lib/apt/lists/* \
     && curl \
         --location \
         --fail \
         --show-error \
         --silent \
-        --output /tmp/dmd_amd64.deb \
-        http://downloads.dlang.org/releases/2.x/2.086.1/dmd_2.086.1-0_amd64.deb \
-    && dpkg -i /tmp/dmd_amd64.deb \
-    && rm /tmp/dmd_amd64.deb \
+        --output /tmp/dmd_${DMD_VERSION}-0_amd64.deb \
+        http://downloads.dlang.org/releases/2.x/${DMD_VERSION}/dmd_${DMD_VERSION}-0_amd64.deb \
+    && dpkg -i /tmp/dmd_${DMD_VERSION}-0_amd64.deb \
+    && rm /tmp/dmd_${DMD_VERSION}-0_amd64.deb \
     && curl \
         --location \
         --fail \
         --show-error \
         --silent \
-        https://github.com/jacob-carlborg/dstep/releases/download/v1.0.0/dstep-1.0.0-linux-x86_64.tar.xz \
+        https://github.com/jacob-carlborg/dstep/releases/download/v1.0.0/dstep-${DSTEP_VERSION}-linux-x86_64.tar.xz \
     | tar -x --xz --directory /usr/local/bin
 
+# Other useful tools
+RUN apt-get update \
+    && apt-get install \
+        --no-install-recommends \
+        --assume-yes \
+        --quiet \
+        git \
+        less \
+        netcat \
+    && rm -r /var/lib/apt/lists/*
+
 # project-specific dependencies
-RUN apt-get install \
+RUN apt-get update \
+    && apt-get install \
         --no-install-recommends \
         --assume-yes \
         --quiet \
         openssl \
-        libssl-dev
+        libssl-dev \
+    && rm -r /var/lib/apt/lists/*
 
 RUN useradd \
         --uid 1000 \
