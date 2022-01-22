@@ -1,11 +1,11 @@
-FROM ubuntu:bionic
+FROM ubuntu:focal
 
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN sed --in-place=~ 's|archive.ubuntu.com|ftp.acc.umu.se|g' /etc/apt/sources.list
 
 # Base tools for Dlang
-ARG DMD_VERSION=2.086.1
+ARG DMD_VERSION=2.098.1
 ARG DSTEP_VERSION=1.0.0
 
 RUN apt-get update \
@@ -26,7 +26,7 @@ RUN apt-get update \
         --show-error \
         --silent \
         --output /tmp/dmd_${DMD_VERSION}-0_amd64.deb \
-        http://downloads.dlang.org/releases/2.x/${DMD_VERSION}/dmd_${DMD_VERSION}-0_amd64.deb \
+        http://downloads.dlang.org/releases/2021/dmd_${DMD_VERSION}-0_amd64.deb \
     && dpkg -i /tmp/dmd_${DMD_VERSION}-0_amd64.deb \
     && rm /tmp/dmd_${DMD_VERSION}-0_amd64.deb \
     && curl \
@@ -35,7 +35,7 @@ RUN apt-get update \
         --show-error \
         --silent \
         https://github.com/jacob-carlborg/dstep/releases/download/v1.0.0/dstep-${DSTEP_VERSION}-linux-x86_64.tar.xz \
-    | tar -x --xz --directory /usr/local/bin
+    |tar -x --xz --directory /usr/local/bin
 
 # Other useful tools
 RUN apt-get update \
@@ -64,7 +64,7 @@ RUN useradd \
         --create-home \
         build
 
-# Don't run as root inside container, 
+# Don't run as root inside container,
 # see https://github.com/microsoft/vscode-remote-release/issues/22
 ENV HOME /home/build
 USER build
