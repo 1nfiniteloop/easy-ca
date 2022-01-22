@@ -38,7 +38,7 @@ unittest /* test non-empty path */
 
 struct ApplicationConfig
 {
-    immutable string[] searchPaths = ["./easy-ca/config", "~/.easy-ca/config", "/etc/easy-ca"];
+    immutable string[] searchPaths = [".easy-ca/config", "~/.easy-ca/config", "/etc/easy-ca"];
     immutable string caConfigFilename = "ca.json";
     immutable string caPolicyFilename = "ca_policies.json";
     immutable string csrConfigFilename = "csr.json";
