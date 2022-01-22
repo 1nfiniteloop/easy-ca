@@ -8,10 +8,9 @@ import infiniteloop.openssl.stubs.rsa:key;
 X509Certificate newCertificateStub(long serialNo = 1)
 {
     auto certificate = new X509Certificate();
-    auto pkey = new EVPKey(key);
     certificate.setValidityTime(10 /* days*/);
-    certificate.setPublicKey(pkey);
+    certificate.setPublicKey(key);
     certificate.setSerialNumber(serialNo);
-    certificate.sign(pkey);
+    certificate.sign(key);
     return certificate;
 }

@@ -106,13 +106,14 @@ class CertificateSigningRequestCmdlinePlugin : Application
 
     private EvpKeyStorage getorCreateKeyFile(const string keyFilename, const string templateName) const
     {
-        ulong keyBits = 2048;
         if (templateName)
         {
-            keyBits = csrConfig.getKeyBitsFrom(templateName);
+            return new ExistingOrNewKeyFile(keyFilename, &passwordCallback, csrConfig.getKeyType(templateName));
         }
-        auto rsaKey = new ExistingOrNewRsaKeyFile(keyFilename, &passwordCallback, keyBits);
-        return new RsaWrappedEvpKey(rsaKey);
+        else
+        {
+            return new ExistingOrNewKeyFile(keyFilename, &passwordCallback);
+        }
     }
 
     void help() const

@@ -108,9 +108,14 @@ class SelfSigningCertificateAuthorityCmdlinePlugin : Application
 
     private EvpKeyStorage getorCreateKeyFile(const string keyFilename, const string templateName) const
     {
-        ulong keyBits = csrConfig.getKeyBitsFrom(templateName);
-        auto rsaKey = new ExistingOrNewRsaKeyFile(keyFilename, &passwordCallback, keyBits);
-        return new RsaWrappedEvpKey(rsaKey);
+        if (templateName)
+        {
+            return new ExistingOrNewKeyFile(keyFilename, &passwordCallback, csrConfig.getKeyType(templateName));
+        }
+        else
+        {
+            return new ExistingOrNewKeyFile(keyFilename, &passwordCallback);
+        }
     }
 
     private CertificateStorage getCertificateFile(const string certFilename) const

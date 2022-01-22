@@ -9,10 +9,17 @@ interface CaConfiguration
     const(string) getPolicyNameFrom(const string templateName) const;
 }
 
+enum CsrKeyType
+{
+    RSA_2048 = "RSA_2048",
+    RSA_4096 = "RSA_4096",
+    ED25519 = "ED25519"
+}
+
 interface CsrConfiguration
 {
     const(string)[] getTemplateNames() const;
-    ulong getKeyBitsFrom(const string templateName) const;
+    const(CsrKeyType) getKeyType(const string templateName) const;
 }
 
 enum PolicyType

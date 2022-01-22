@@ -2,9 +2,9 @@
 	"authors": [
 		"Lars Gunnarsson"
 	],
-	"copyright": "Copyright © 2019, Lars Gunnarsson",
+	"copyright": "Copyright © 2019-2022, Lars Gunnarsson",
 	"dependencies": {
-		"openssl-ca": "1.0.0"
+		"openssl-ca": "2.0.0"
 	},
 	"description": "Certificate authority for signing and managing ssl certificates",
 	"license": "MIT",

@@ -135,8 +135,7 @@ class CertificateAuthorityCmdlinePlugin : Application
 
     private EvpKeyStorage getKeyFile(const string caKeyFilename) const
     {
-        auto rsaKey = new RsaKeyFile(caKeyFilename, &passwordCallback);
-        return new RsaWrappedEvpKey(rsaKey);
+        return new EvpKeyFile(caKeyFilename, &passwordCallback);
     }
 
     private CertificateStorage getCertificateFile(const string certFilename) const

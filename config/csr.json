@@ -1,14 +1,14 @@
 {
   "CA_ROOT": {
-    "keyBits": 4096
+    "keyType": "RSA_4096"
   },
   "CA_INTERMEDIATE": {
-    "keyBits": 4096
+    "keyType": "RSA_4096"
   },
   "SERVER": {
-    "keyBits": 2048
+    "keyType": "RSA_2048"
   },
   "CLIENT": {
-    "keyBits": 2048
+    "keyType": "RSA_2048"
   }
 }

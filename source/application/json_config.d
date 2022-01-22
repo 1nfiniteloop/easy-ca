@@ -104,7 +104,7 @@ class CsrConfigurationJson : CsrConfiguration
 {
     private static struct Key
     {
-        enum keyBits = "keyBits";
+        enum keyType = "keyType";
     }
 
     private JSONValue configurations;
@@ -119,20 +119,20 @@ class CsrConfigurationJson : CsrConfiguration
         return to!(string[])(configurations.object.keys);
     }
 
-    ulong getKeyBitsFrom(const string templateName) const
+    const(CsrKeyType) getKeyType(const string templateName) const
     {
         auto item = configurations[templateName].object;
-        return item[Key.keyBits].integer;
+        return to!CsrKeyType(item[Key.keyType].str);
     }
 
-    unittest /* Get key config */
+    unittest /* Get key type from config */
     {
         import std.format:format;
-        ulong keyBits = 512;
+        CsrKeyType keyType = CsrKeyType.RSA_2048;
         enum templateName = "first";
-        auto configuration = format(`{"%s": {"keyBits": %d }}`, templateName, keyBits);
+        auto configuration = format(`{"%s": {"keyType": "%s" }}`, templateName, to!string(keyType));
         auto cfg = new CsrConfigurationJson(configuration);
-        assert(keyBits == cfg.getKeyBitsFrom(templateName), "Expects to get same key bits as configured");
+        assert(keyType == cfg.getKeyType(templateName), "Expects to get same key type as configured");
     }
 }
 

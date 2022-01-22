@@ -10,6 +10,7 @@ import std.path;
 import infiniteloop.openssl;
 
 import application.config;
+import application.error;
 import application.io;
 import application.json_config;
 import application.json_subject;
@@ -54,69 +55,25 @@ class EvpKeyFile : EvpKeyStorage
 }
 
 /**
- * Use the EVP key interface with an RSA key.
+ * Wrapper class which creates a key on "read()" if not exists.
  */
-class RsaWrappedEvpKey : EvpKeyStorage
+class ExistingOrNewKeyFile : EvpKeyStorage
 {
-    private RsaKeyStorage rsaKey;
+    private EvpKeyFile keyFile;
+    private immutable string filename;
+    private CsrKeyType keyType;
 
-    this(RsaKeyStorage rsaKey)
+    this(
+        const string filename,
+        PasswordCallbackFcn passwordCallback,
+        CsrKeyType keyType = CsrKeyType.RSA_2048)
     {
-        this.rsaKey = rsaKey;
+        this.keyFile = new EvpKeyFile(filename, passwordCallback);
+        this.filename = filename;
+        this.keyType = keyType;
     }
 
     EVPKey read()
-    {
-        return new EVPKey(rsaKey.read());
-    }
-
-    void write(EVPKey key)
-    {
-        /* TODO fix! */
-        throw new Exception("Not implemented");
-    }
-}
-
-class RsaKeyFile : RsaKeyStorage
-{
-    private PasswordCallbackFcn passwordCallback;
-    private immutable string filename;
-
-    this(const string filename, PasswordCallbackFcn passwordCallback)
-    {
-        this.filename = filename;
-        this.passwordCallback = passwordCallback;
-    }
-
-    void write(RsaKey key)
-    {
-        std.file.write(filename, key.toPEM(passwordCallback(filename)));
-        filename.setAttributes(octal!400);
-    }
-
-    RsaKey read()
-    {
-        return new RsaKey(readText(filename), passwordCallback(filename));
-    }
-}
-
-/**
- * Wrapper class which creates a key on "read()" if not exists.
- */
-class ExistingOrNewRsaKeyFile : RsaKeyStorage
-{
-    private RsaKeyFile keyFile;
-    private immutable string filename;
-    private immutable RsaKeyConfig keyConfig;
-
-    this(const string filename, PasswordCallbackFcn passwordCallback, ulong keyBits)
-    {
-        this.keyFile = new RsaKeyFile(filename, passwordCallback);
-        this.filename = filename;
-        this.keyConfig = RsaKeyConfig(to!int(keyBits));
-    }
-
-    RsaKey read()
     {
         if (exists(filename))
         {
@@ -124,13 +81,33 @@ class ExistingOrNewRsaKeyFile : RsaKeyStorage
         }
         else
         {
-            auto key = new RsaKey(keyConfig);
+            auto key = newKey();
             this.keyFile.write(key);
             return key;
         }
     }
 
-    void write(RsaKey key)
+    private EVPKey newKey()
+    {
+        if (this.keyType == CsrKeyType.RSA_2048)
+        {
+            return new RsaKey(RsaKeyConfig(2048));
+        }
+        else if (this.keyType == CsrKeyType.RSA_4096)
+        {
+            return new RsaKey(RsaKeyConfig(4096));
+        }
+        else if (this.keyType == CsrKeyType.ED25519)
+        {
+            return new Ed25519Key();
+        }
+        else
+        {
+            throw new ConfigurationError("Failed to create new key, unsupported key type: %s", to!string(keyType));
+        }
+    }
+
+    void write(EVPKey key)
     {
         this.keyFile.write(key);
     }

@@ -12,12 +12,6 @@ interface EvpKeyStorage
     void write(EVPKey key);
 }
 
-interface RsaKeyStorage
-{
-    RsaKey read();
-    void write(RsaKey key);
-}
-
 interface SubjectStorage
 {
     const(string)[string] read();
