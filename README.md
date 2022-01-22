@@ -3,19 +3,14 @@
 ## Overview
 
 `easy-ca` is intended to be a convenient tool for easily run your own
-Certificate Authority and provision x509/SSL certificates, both manually and
-automatically. The tool uses the openssl library and is written in dlang.
+Certificate Authority and provision x509/SSL certificates. The tool uses the
+openssl library and is written in dlang.
 
 `easy-ca` provides an alternative of using openssl commandline tool which
 requires comprehensive configurations and knowledge before you can start
 provision certificates. This tool also serves as a base for provisioning
 certificates automatically. It uses JSON-format exclusively through the entire
 application and could easily be integrated into a webserer for example.
-
-Future work, roadmap:
-
-* Implement webserver for automatic certificate provisioning.
-* Implement certificate revocation.
 
 ## License
 
@@ -52,14 +47,14 @@ MIT
 These steps describes how to manually set up your own Certificate authority
 and sign certificates. Some notes:
 
-* The tool uses a naming convention when creating and reading files. 
-* If an RSA key does not exists, it will be created.
+* The tool uses a naming convention when creating and reading files.
+* If key does not exists, it will be created.
 
 ### Create Root Certificate Authority
 
 The root certificate and key shall preferably be safely stored offline.
 
-1. Set path to storage location with: 
+1. Set path to storage location with:
    `ca_root=/media/${USER}/<media-device>/easy-ca/ca` and create directory
    structure with `mkdir --parents ${ca_root}`.
 2. Create the subject as a json-formatted file `${ca_root}/<name>.subject.json`
@@ -67,15 +62,15 @@ The root certificate and key shall preferably be safely stored offline.
    ```json
    {
        "C":  "SE",
-       "ST": "Gothenburg",
+       "ST": "Göteborg",
        "O":  "World Wide Web Inc.",
        "OU": "World Wide Web Inc. Certificate Authority",
        "CN": "World Wide Web Inc. Root CA"
    }
    ```
-3. Create the root certificate and rsa key with
+3. Create the root certificate and private key with
    `easy-ca --self-sign --path=${ca_root} --template=CA_ROOT ca.root`.
-4. Two new files has now been created: `${ca_root}/ca.root.cert.pem` and 
+4. Two new files has now been created: `${ca_root}/ca.root.cert.pem` and
    `${ca_root}/ca.root.key.pem`.
 
 ### Create Intermediate Certificate Authority
@@ -89,16 +84,16 @@ certificates on behalf of the root ca.
    `${ca_intermediate}/<name>.subject.json` where the name is `ca.intermediate`.
    **Note:** Make sure the subject follows the ca-policy configured in
    `ca_policies.json`.
-4. Create the certificate signing request and rsa key:
+4. Create the certificate signing request and private key:
    `easy-ca --new-csr --path=${ca_intermediate} --template=CA_INTERMEDIATE ca.intermediate`.
-   **Note** The rsa key bits is provided from configuration-file
+   **Note** The key type is provided from configuration-file
    `csr_config.json` if template is provided, else default 2048 bits is used.
 5. Create the intermediate certificate using the root certificate authority:
-   `easy-ca --sign --ca-path=${ca_root} --ca-name=ca.root --template=CA_INTERMEDIATE --path=${ca_intermediate} ca.intermediate`. 
+   `easy-ca --sign --ca-path=${ca_root} --ca-name=ca.root --template=CA_INTERMEDIATE --path=${ca_intermediate} ca.intermediate`.
 6. Three new files has now been created: `ca.intermediate.key.pem`,
    `ca.intermediate.csr.pem` and `ca.intermediate.cert.pem`.
 7. Create the certificate chain file manually:
-   `cat ${ca_intermediate}/*.cert.pem ${ca_root}/*.cert.pem > ${ca_intermediate}/ca.intermediate.ca-chain.pem`.
+   `cat ${ca_intermediate}/ca.intermediate.cert.pem ${ca_root}/ca.root.cert.pem > ${ca_intermediate}/ca.intermediate.ca-chain.pem`.
 
 ### Create a server certificate
 
@@ -107,11 +102,11 @@ This step describes how to create a certificate signed by our intermediate ca.
 1. Create the subject in a json-formatted file `<name>.subject.json` where the
    name is example `www.example.com`. **Note:** Make sure the subject follows
    the policy configured in `ca_policies.json`.
-2. Create a certificate signing request and rsa key:
+2. Create a certificate signing request and private key:
    `easy-ca --new-csr --template=SERVER www.example.com`.
 3. Create the server certificate by using the `ca.intermediate` ca for signing:
    `easy-ca --sign --ca-path=${ca_intermediate} --ca-name=ca.intermediate --template=SERVER www.example.com`.
-4. Three new files has now been created: `www.example.com.key.pem`, 
+4. Three new files has now been created: `www.example.com.key.pem`,
    `www.example.com.csr.pem` and `www.example.com.cert.pem`.
 
 ### Inspect and verify
