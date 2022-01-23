@@ -9,21 +9,21 @@ import application.io;
  */
 class SelfSigningCertificateAuthority
 {
-    private EVPKey certificateAndSigningKey;
+  private EVPKey certificateAndSigningKey;
 
-    this(EvpKeyStorage keyStorage)
-    {
-        certificateAndSigningKey = keyStorage.read();
-    }
+  this(EvpKeyStorage keyStorage)
+  {
+    certificateAndSigningKey = keyStorage.read();
+  }
 
-    /**
+  /**
      * Create a self-signed certificate using parameters, without a CSR.
      */
-    X509Certificate newCertificate(SubjectStorage subjectStorage, ulong validNoOfDays, long serialNumber,
-            const string[string] extensions)
-    {
-        auto subjectAndIssuerName = subjectStorage.read();
-        return newX509Certificate(subjectAndIssuerName, subjectAndIssuerName, validNoOfDays,
-                serialNumber, certificateAndSigningKey, certificateAndSigningKey, extensions);
-    }
+  X509Certificate newCertificate(SubjectStorage subjectStorage, ulong validNoOfDays, long serialNumber,
+    const string[string] extensions)
+  {
+    auto subjectAndIssuerName = subjectStorage.read();
+    return newX509Certificate(subjectAndIssuerName, subjectAndIssuerName, validNoOfDays,
+      serialNumber, certificateAndSigningKey, certificateAndSigningKey, extensions);
+  }
 }

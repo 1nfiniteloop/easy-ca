@@ -3,49 +3,48 @@ module application.io;
 import infiniteloop.openssl;
 import application.config;
 
-
 alias PasswordCallbackFcn = const(string) function(const(string) keyName);
 
 interface EvpKeyStorage
 {
-    EVPKey read();
-    void write(EVPKey key);
+  EVPKey read();
+  void write(EVPKey key);
 }
 
 interface SubjectStorage
 {
-    const(string)[string] read();
+  const(string)[string] read();
 }
 
 interface CertificateSigningRequestStorage
 {
-    X509CertificateSigningRequest read();
-    void write(X509CertificateSigningRequest csr);
+  X509CertificateSigningRequest read();
+  void write(X509CertificateSigningRequest csr);
 }
 
 interface CertificateStorage
 {
-    X509Certificate read();
-    void write(X509Certificate cert);
+  X509Certificate read();
+  void write(X509Certificate cert);
 }
 
 interface CsrConfigurationStorage
 {
-    const(CsrConfiguration) read();
+  const(CsrConfiguration) read();
 }
 
 interface CaConfigurationStorage
 {
-    const(CaConfiguration) read();
+  const(CaConfiguration) read();
 }
 
 interface CaPolicyConfigurationStorage
 {
-    CaPolicyConfiguration read();
+  CaPolicyConfiguration read();
 }
 
 interface CertificateDatabaseStorage
 {
-    const(string) read();
-    void write(const string);
+  const(string) read();
+  void write(const string);
 }

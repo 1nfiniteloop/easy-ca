@@ -1,8 +1,7 @@
 module application.app;
 
-
 interface Application
 {
-    void run();
-    void help();
+  void run();
+  void help();
 }
