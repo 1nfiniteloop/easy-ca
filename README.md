@@ -1,5 +1,13 @@
 # easy-ca
 
+## This project is archived
+
+This project is not maintained anymore. I recommend to use CloudFlare's
+pki tool <https://github.com/cloudflare/cfssl> which aligns exactly against the
+ambitions I had with this project. Check out my other project
+<https://github.com/1nfiniteloop/pki> which is based on cfssl. Another
+known pki tool is <https://github.com/square/certstrap>.
+
 ## Overview
 
 `easy-ca` is intended to be a convenient tool for easily run your own
